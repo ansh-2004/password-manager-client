@@ -13,7 +13,9 @@
     <form id="credentialForm">
       <input type="text" id="website" placeholder="Website" required />
       <input type="text" id="username" placeholder="Username" required />
-      <input type="text" id="password" placeholder="Password" required />
+      <input type="text" id="password" oninput="checkPasswordStrength(this.value, 'add')" placeholder="Password" required />
+      <div id="strengthText-add" style="margin-top: 4px; font-weight: bold;"></div>
+      <div id="strengthBar-add" style="height: 5px; background-color: lightgray; border-radius: 4px; margin-top: 2px;  transition: width 0.3s ease-in-out;"></div>
       <button type="button" onclick="generatePassword()">🔄 Generate</button>
       <button type="submit">➕ Add Credential</button>
     </form>
