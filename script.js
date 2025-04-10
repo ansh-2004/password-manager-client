@@ -5,7 +5,17 @@ document.getElementById('credentialForm').addEventListener('submit', async (e) =
   const website = document.getElementById('website').value;
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
-
+  const passwordStrength = document.getElementById('strengthText-add').innerText;
+  if (!website || !username || !password) {
+    alert("Please fill out all fields.");
+    return;
+  }
+  
+  if (passwordStrength !== 'Strong') {
+    alert("Password must be strong to save credentials.");
+    return;
+  }
+  
   const res = await fetch(`${API}/add`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -30,17 +40,17 @@ async function loadCredentials() {
     const row = document.createElement('tr');
     row.id = `row-${item._id}`;
     row.innerHTML = `
-      <td>${item.website}</td>
-      <td>${item.username}</td>
-      <td>
-        <span id="pw-${item._id}">********</span>
-        <button onclick="togglePassword('${item._id}', '${item.password}')">👁</button>
-        <button onclick="copyPassword('${item.password}')">📋</button>
-      </td>
-      <td>
-        <button onclick="editCredential('${item._id}', '${item.website}', '${item.username}', '${item.password}')">✏️</button>
-        <button onclick="deleteCredential('${item._id}')">🗑</button>
-      </td>
+       <td data-label="Website">${item.website}</td>
+  <td data-label="Username">${item.username}</td>
+  <td data-label="Password">
+    <span id="pw-${item._id}">********</span>
+    <button onclick="togglePassword('${item._id}', '${item.password}')">👁</button>
+    <button onclick="copyPassword('${item.password}')">📋</button>
+  </td>
+  <td data-label="Actions">
+    <button onclick="editCredential('${item._id}', '${item.website}', '${item.username}', '${item.password}')">✏️</button>
+    <button onclick="deleteCredential('${item._id}')">🗑</button>
+  </td>
     `;
 
     tbody.appendChild(row);
@@ -177,6 +187,45 @@ function editCredential(id, website, username, password) {
     const passwordInput = document.getElementById('password');
     passwordInput.value = password;
     checkPasswordStrength(password, 'add');
+  }
+  
+  function exportAsCSV() {
+    fetch(`${API}/get`)
+      .then(res => res.json())
+      .then(data => {
+        const header = ['Website', 'Username', 'Password'];
+        const rows = data.map(item => [item.website, item.username, item.password]);
+  
+        let csvContent = 'data:text/csv;charset=utf-8,';
+        csvContent += header.join(',') + '\n';
+        rows.forEach(row => {
+          csvContent += row.join(',') + '\n';
+        });
+  
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'credentials.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+  }
+  
+  function exportAsJSON() {
+    fetch(`${API}/get`)
+      .then(res => res.json())
+      .then(data => {
+        const jsonData = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+  
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'credentials.json';
+        link.click();
+        URL.revokeObjectURL(url);
+      });
   }
   
 
