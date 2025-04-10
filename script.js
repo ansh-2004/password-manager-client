@@ -15,7 +15,7 @@ document.getElementById('credentialForm').addEventListener('submit', async (e) =
     alert("Password must be strong to save credentials.");
     return;
   }
-  
+
   const res = await fetch(`${API}/add`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -227,6 +227,32 @@ function editCredential(id, website, username, password) {
         URL.revokeObjectURL(url);
       });
   }
+
+  const toggleBtn = document.getElementById('darkModeToggle');
+
+toggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+
+  
+  if (document.body.classList.contains('dark-mode')) {
+    toggleBtn.innerText = '☀️ Light Mode';
+  } else {
+    toggleBtn.innerText = '🌙 Dark Mode';
+  }
+
+  
+  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+});
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  const isDarkMode = JSON.parse(localStorage.getItem('darkMode'));
+  if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    toggleBtn.innerText = '☀️ Light Mode';
+  }
+});
+
   
 
 window.onload = loadCredentials;

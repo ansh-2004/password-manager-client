@@ -7,8 +7,15 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Password Manager 🔐</h1>
+    <div class="header-container">
+        <h1 class="header-title">Password Manager 🔒</h1>
+        <button id="darkModeToggle">
+          🌙 Dark Mode
+        </button>
+      </div>
+  
   <section class="search-section">
+    
     <input type="text" id="searchInput" placeholder="🔍 Search by website..." onkeyup="filterCredentials()">
   </section>
   <section class="form-section">
