@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000';
+const API = 'https://password-manager-server-v5al.onrender.com';
 
 document.getElementById('credentialForm').addEventListener('submit', async (e) => {
   e.preventDefault();
